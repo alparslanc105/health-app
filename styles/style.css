@@ -1,0 +1,115 @@
+/* RESET */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* BODY */
+body {
+    background: #0b1220;
+    color: #e5e7eb;
+    padding: 16px;
+}
+
+/* HEADER */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+header h1 {
+    font-size: 22px;
+}
+
+/* BUTTONS */
+button {
+    background: #3b82f6;
+    color: white;
+    border: none;
+    padding: 10px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-top: 8px;
+}
+
+button:hover {
+    background: #2563eb;
+}
+
+/* SECTIONS (CARDS) */
+section {
+    background: #111827;
+    padding: 14px;
+    border-radius: 14px;
+    margin-bottom: 14px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+}
+
+/* INPUTS */
+input, select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 8px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    background: #1f2937;
+    color: white;
+}
+
+/* LIST */
+ul {
+    list-style: none;
+    margin-top: 10px;
+}
+
+li {
+    background: #1f2937;
+    padding: 10px;
+    margin-bottom: 8px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* DELETE */
+li button {
+    background: #ef4444;
+    padding: 6px 10px;
+    border-radius: 8px;
+}
+
+li button:hover {
+    background: #dc2626;
+}
+
+/* DASHBOARD */
+#dashboard p {
+    margin: 6px 0;
+    font-weight: bold;
+    color: #93c5fd;
+}
+
+/* FOLLOW MODE */
+#workoutScreen {
+    margin-top: 12px;
+    padding: 12px;
+    background: #0f172a;
+    border-radius: 12px;
+    text-align: center;
+}
+
+#exerciseTitle {
+    font-size: 20px;
+    margin-bottom: 8px;
+}
+
+#setInfo, #repInfo {
+    margin: 4px 0;
+    color: #cbd5e1;
+}

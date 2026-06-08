@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Health App</title>
+    <link rel="stylesheet" href="styles/style.css">
+</head>
+
+<body>
+
+<header>
+    <h1 data-i18n="title">My Health</h1>
+    <button id="langToggle">NL / EN</button>
+</header>
+
+<main>
+
+<!-- DASHBOARD -->
+<section id="dashboard">
+    <h2 data-i18n="dashboard">Dashboard</h2>
+    <p id="totalExercises">Exercises: 0</p>
+    <p id="totalWorkouts">Workouts: 0</p>
+    <p id="totalVolume">Total Volume: 0</p>
+</section>
+
+<!-- ADD EXERCISE -->
+<section>
+    <h2 data-i18n="addExercise">Add Exercise</h2>
+
+    <input id="exerciseName" data-i18n-placeholder="exerciseName" placeholder="Exercise name">
+    <input id="exerciseCategory" data-i18n-placeholder="category" placeholder="Category">
+
+    <button id="addExerciseBtn">Save</button>
+</section>
+
+<!-- EXERCISES -->
+<section>
+    <h2 data-i18n="exercises">Exercises</h2>
+    <ul id="exerciseList"></ul>
+</section>
+
+<!-- WORKOUT BUILDER -->
+<section>
+    <h2 data-i18n="builder">Workout Builder</h2>
+
+    <select id="exerciseSelect"></select>
+
+    <input id="setsInput" type="number" placeholder="Sets">
+    <input id="repsInput" type="number" placeholder="Reps">
+
+    <button id="addWorkoutBtn">Add</button>
+</section>
+
+<!-- WORKOUT LIST -->
+<section>
+    <h2 data-i18n="list">Workout List</h2>
+    <ul id="workoutList"></ul>
+</section>
+
+<!-- FOLLOW -->
+<section>
+    <h2 data-i18n="follow">Follow Along</h2>
+
+    <button id="startWorkout">Start</button>
+
+    <div id="workoutScreen" style="display:none;">
+        <h3 id="exerciseTitle"></h3>
+        <p id="setInfo"></p>
+        <p id="repInfo"></p>
+        <button id="nextBtn">Next</button>
+    </div>
+</section>
+
+</main>
+
+<script src="js/app.js"></script>
+<script>
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("service-worker.js");
+}
+</script>
+
+</body>
+</html>

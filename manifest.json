@@ -1,0 +1,21 @@
+{
+  "name": "My Health Workout App",
+  "short_name": "HealthApp",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0b1220",
+  "theme_color": "#0b1220",
+  "orientation": "portrait",
+  "icons": [
+  {
+    "src": "https://via.placeholder.com/192",
+    "sizes": "192x192",
+    "type": "image/png"
+  },
+  {
+    "src": "https://via.placeholder.com/512",
+    "sizes": "512x512",
+    "type": "image/png"
+  }
+]
+}
