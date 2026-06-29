@@ -1,6 +1,9 @@
 let lang = "nl";
 
+// =====================
 // TRANSLATIONS
+// =====================
+
 const translations = {
     nl: {
         title: "Mijn Gezondheid",
@@ -26,14 +29,20 @@ const translations = {
     }
 };
 
+// =====================
 // STORAGE
+// =====================
+
 const getExercises = () => JSON.parse(localStorage.getItem("exercises")) || [];
 const saveExercises = (d) => localStorage.setItem("exercises", JSON.stringify(d));
 
 const getWorkouts = () => JSON.parse(localStorage.getItem("workouts")) || [];
 const saveWorkouts = (d) => localStorage.setItem("workouts", JSON.stringify(d));
 
+// =====================
 // ELEMENTS
+// =====================
+
 const exerciseList = document.getElementById("exerciseList");
 const exerciseSelect = document.getElementById("exerciseSelect");
 const workoutList = document.getElementById("workoutList");
@@ -55,14 +64,28 @@ const totalExercisesEl = document.getElementById("totalExercises");
 const totalWorkoutsEl = document.getElementById("totalWorkouts");
 const totalVolumeEl = document.getElementById("totalVolume");
 
+// STREAK
+const streakText = document.getElementById("streakText");
+
+// TIMER (optional UI)
+let timer;
+let seconds = 0;
+
+// =====================
 // INIT
+// =====================
+
 renderExercises();
 loadDropdown();
 renderWorkouts();
 updateUI();
 updateDashboard();
+renderStreak();
 
-// ADD EXERCISE
+// =====================
+// EXERCISE ADD
+// =====================
+
 addExerciseBtn.onclick = () => {
     const name = document.getElementById("exerciseName").value;
     const category = document.getElementById("exerciseCategory").value;
@@ -79,7 +102,10 @@ addExerciseBtn.onclick = () => {
     updateDashboard();
 };
 
-// ADD WORKOUT
+// =====================
+// WORKOUT ADD
+// =====================
+
 addWorkoutBtn.onclick = () => {
     const exercise = exerciseSelect.value;
     const sets = document.getElementById("setsInput").value;
@@ -96,9 +122,13 @@ addWorkoutBtn.onclick = () => {
     updateDashboard();
 };
 
-// RENDER EXERCISES
+// =====================
+// EXERCISE LIST
+// =====================
+
 function renderExercises() {
     exerciseList.innerHTML = "";
+
     getExercises().forEach(ex => {
         const li = document.createElement("li");
         li.textContent = `${ex.name} (${ex.category})`;
@@ -119,7 +149,10 @@ function renderExercises() {
     });
 }
 
+// =====================
 // DROPDOWN
+// =====================
+
 function loadDropdown() {
     const data = getExercises();
     exerciseSelect.innerHTML = "";
@@ -140,9 +173,13 @@ function loadDropdown() {
     });
 }
 
-// WORKOUTS
+// =====================
+// WORKOUT LIST
+// =====================
+
 function renderWorkouts() {
     workoutList.innerHTML = "";
+
     getWorkouts().forEach(w => {
         const li = document.createElement("li");
         li.textContent = `${w.exercise} - ${w.sets} x ${w.reps}`;
@@ -162,7 +199,10 @@ function renderWorkouts() {
     });
 }
 
-// FOLLOW
+// =====================
+// FOLLOW ALONG MODE
+// =====================
+
 let index = 0;
 let set = 1;
 let active = [];
@@ -205,20 +245,77 @@ nextBtn.onclick = () => {
     show();
 };
 
+// =====================
 // DASHBOARD
+// =====================
+
 function updateDashboard() {
     const ex = getExercises();
     const wo = getWorkouts();
 
     let volume = 0;
-    wo.forEach(w => volume += w.sets * w.reps);
+    wo.forEach(w => volume += Number(w.sets) * Number(w.reps));
 
     totalExercisesEl.textContent = `Exercises: ${ex.length}`;
     totalWorkoutsEl.textContent = `Workouts: ${wo.length}`;
     totalVolumeEl.textContent = `Total Volume: ${volume}`;
 }
 
-// LANGUAGE
+// =====================
+// STREAK SYSTEM
+// =====================
+
+function updateStreak() {
+    let streak = JSON.parse(localStorage.getItem("streak")) || {
+        lastDate: null,
+        count: 0
+    };
+
+    const today = new Date().toDateString();
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    if (streak.lastDate !== today) {
+        if (streak.lastDate === yesterday.toDateString()) {
+            streak.count += 1;
+        } else {
+            streak.count = 1;
+        }
+
+        streak.lastDate = today;
+        localStorage.setItem("streak", JSON.stringify(streak));
+    }
+
+    return streak.count;
+}
+
+function renderStreak() {
+    const count = updateStreak();
+    streakText.textContent = `Streak: ${count} days 🔥`;
+}
+
+// =====================
+// TIMER MODE
+// =====================
+
+document.getElementById("startTimer")?.addEventListener("click", () => {
+    clearInterval(timer);
+    seconds = 0;
+
+    timer = setInterval(() => {
+        seconds++;
+
+        const min = String(Math.floor(seconds / 60)).padStart(2, "0");
+        const sec = String(seconds % 60).padStart(2, "0");
+
+        document.getElementById("timer").textContent = `${min}:${sec}`;
+    }, 1000);
+});
+
+// =====================
+// LANGUAGE SYSTEM
+// =====================
+
 function updateUI() {
     document.querySelectorAll("[data-i18n]").forEach(el => {
         const key = el.getAttribute("data-i18n");
