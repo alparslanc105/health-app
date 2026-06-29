@@ -46,6 +46,14 @@ const totalVolumeEl = document.getElementById("totalVolume");
 
 const streakText = document.getElementById("streakText");
 
+// Follow Along elements
+const startWorkoutBtn = document.getElementById("startWorkout");
+const workoutScreen = document.getElementById("workoutScreen");
+const exerciseTitle = document.getElementById("exerciseTitle");
+const setInfo = document.getElementById("setInfo");
+const repInfo = document.getElementById("repInfo");
+const nextBtn = document.getElementById("nextBtn");
+
 // =====================
 // INIT
 // =====================
@@ -54,6 +62,9 @@ renderAll();
 updateDashboard();
 renderStreak();
 updateUI();
+
+// Follow Along ekranını başlangıçta gizle
+workoutScreen.style.display = "none";
 
 // =====================
 // ADD EXERCISE
@@ -270,3 +281,64 @@ document.getElementById("startTimer").onclick = () => {
         document.getElementById("timer").textContent = `${m}:${s}`;
     }, 1000);
 };
+
+// =====================
+// FOLLOW ALONG
+// =====================
+
+let followAlongList = [];
+let followAlongIndex = 0;
+let currentSetsRemaining = 0;
+
+startWorkoutBtn.onclick = () => {
+    followAlongList = getWorkouts();
+
+    if (followAlongList.length === 0) {
+        alert("Henüz kayıtlı bir workout yok. Önce 'Workout Builder' kısmından ekle.");
+        return;
+    }
+
+    followAlongIndex = 0;
+    workoutScreen.style.display = "block";
+    loadExerciseAtIndex();
+};
+
+function loadExerciseAtIndex() {
+    const current = followAlongList[followAlongIndex];
+    currentSetsRemaining = Number(current.sets) || 1;
+    showCurrentWorkoutStep();
+}
+
+nextBtn.onclick = () => {
+    currentSetsRemaining--;
+
+    if (currentSetsRemaining > 0) {
+        showCurrentWorkoutStep();
+        return;
+    }
+
+    // bu egzersizin setleri bitti, sıradaki egzersize geç
+    followAlongIndex++;
+
+    if (followAlongIndex >= followAlongList.length) {
+        exerciseTitle.textContent = "Bitti! 🎉";
+        setInfo.textContent = "";
+        repInfo.textContent = "";
+
+        setTimeout(() => {
+            workoutScreen.style.display = "none";
+        }, 1500);
+
+        return;
+    }
+
+    loadExerciseAtIndex();
+};
+
+function showCurrentWorkoutStep() {
+    const current = followAlongList[followAlongIndex];
+
+    exerciseTitle.textContent = current.exercise;
+    setInfo.textContent = `Set: ${currentSetsRemaining}`;
+    repInfo.textContent = `Reps: ${current.reps}`;
+}
