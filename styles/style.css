@@ -1,4 +1,3 @@
-/* RESET */
 * {
     margin: 0;
     padding: 0;
@@ -6,10 +5,9 @@
     font-family: Arial, sans-serif;
 }
 
-/* BODY */
 body {
-    background: #0b1220;
-    color: #e5e7eb;
+    background: #0f172a;
+    color: #e2e8f0;
     padding: 16px;
 }
 
@@ -18,11 +16,41 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 16px;
+    padding: 16px;
+    margin-bottom: 20px;
 }
 
 header h1 {
     font-size: 22px;
+}
+
+/* MAIN LAYOUT */
+main {
+    display: grid;
+    gap: 16px;
+}
+
+/* CARD UI */
+.card {
+    background: #1e293b;
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.card h2 {
+    margin-bottom: 12px;
+    font-size: 18px;
+}
+
+/* INPUTS */
+input, select {
+    width: 100%;
+    padding: 10px;
+    margin: 6px 0;
+    border-radius: 8px;
+    border: none;
+    outline: none;
 }
 
 /* BUTTONS */
@@ -30,86 +58,76 @@ button {
     background: #3b82f6;
     color: white;
     border: none;
-    padding: 10px 12px;
-    border-radius: 10px;
-    cursor: pointer;
+    padding: 10px;
     margin-top: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
 }
 
 button:hover {
     background: #2563eb;
 }
 
-/* SECTIONS (CARDS) */
-section {
-    background: #111827;
-    padding: 14px;
-    border-radius: 14px;
-    margin-bottom: 14px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.35);
-}
-
-/* INPUTS */
-input, select {
-    width: 100%;
-    padding: 10px;
-    margin-top: 8px;
-    border-radius: 10px;
-    border: none;
-    outline: none;
-    background: #1f2937;
-    color: white;
-}
-
-/* LIST */
+/* LISTS */
 ul {
     list-style: none;
     margin-top: 10px;
 }
 
 li {
-    background: #1f2937;
+    background: #0f172a;
+    margin-top: 8px;
     padding: 10px;
-    margin-bottom: 8px;
-    border-radius: 10px;
+    border-radius: 8px;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-/* DELETE */
-li button {
-    background: #ef4444;
-    padding: 6px 10px;
-    border-radius: 8px;
-}
-
-li button:hover {
-    background: #dc2626;
-}
-
 /* DASHBOARD */
-#dashboard p {
+#totalExercises,
+#totalWorkouts,
+#totalVolume,
+#streakText {
     margin: 6px 0;
     font-weight: bold;
-    color: #93c5fd;
 }
 
-/* FOLLOW MODE */
-#workoutScreen {
-    margin-top: 12px;
-    padding: 12px;
-    background: #0f172a;
-    border-radius: 12px;
+/* TIMER */
+#timer {
+    font-size: 28px;
     text-align: center;
+    margin: 10px 0;
 }
 
-#exerciseTitle {
-    font-size: 20px;
-    margin-bottom: 8px;
+/* FOLLOW ALONG */
+#workoutScreen {
+    margin-top: 10px;
+    padding: 10px;
+    background: #0f172a;
+    border-radius: 10px;
 }
 
-#setInfo, #repInfo {
-    margin: 4px 0;
-    color: #cbd5e1;
+/* FOOTER */
+footer {
+    text-align: center;
+    margin-top: 20px;
+    opacity: 0.6;
+}
+
+/* RESPONSIVE - DESKTOP */
+@media (min-width: 768px) {
+    main {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    header h1 {
+        font-size: 28px;
+    }
+}
+
+/* SMALL TOUCH UX */
+button:active {
+    transform: scale(0.98);
 }
