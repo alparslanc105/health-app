@@ -1,31 +1,19 @@
-let lang = "nl";
+let lang = "en";
 
 // =====================
 // TRANSLATIONS
 // =====================
 
 const translations = {
-    nl: {
-        title: "Mijn Gezondheid",
-        dashboard: "Dashboard",
-        addExercise: "Nieuwe oefening",
-        exercises: "Oefeningen",
-        builder: "Workout Builder",
-        list: "Workout Lijst",
-        follow: "Follow Along",
-        exerciseName: "Oefening naam",
-        category: "Categorie"
-    },
     en: {
-        title: "My Health",
+        title: "FitTrack",
         dashboard: "Dashboard",
-        addExercise: "New Exercise",
-        exercises: "Exercises",
-        builder: "Workout Builder",
-        list: "Workout List",
-        follow: "Follow Along",
-        exerciseName: "Exercise name",
-        category: "Category"
+        addExercise: "Add Exercise"
+    },
+    nl: {
+        title: "FitTrack",
+        dashboard: "Dashboard",
+        addExercise: "Oefening Toevoegen"
     }
 };
 
@@ -34,10 +22,10 @@ const translations = {
 // =====================
 
 const getExercises = () => JSON.parse(localStorage.getItem("exercises")) || [];
-const saveExercises = (d) => localStorage.setItem("exercises", JSON.stringify(d));
+const saveExercises = (data) => localStorage.setItem("exercises", JSON.stringify(data));
 
 const getWorkouts = () => JSON.parse(localStorage.getItem("workouts")) || [];
-const saveWorkouts = (d) => localStorage.setItem("workouts", JSON.stringify(d));
+const saveWorkouts = (data) => localStorage.setItem("workouts", JSON.stringify(data));
 
 // =====================
 // ELEMENTS
@@ -50,40 +38,25 @@ const workoutList = document.getElementById("workoutList");
 const addExerciseBtn = document.getElementById("addExerciseBtn");
 const addWorkoutBtn = document.getElementById("addWorkoutBtn");
 
-const startBtn = document.getElementById("startWorkout");
-const workoutScreen = document.getElementById("workoutScreen");
-const exerciseTitle = document.getElementById("exerciseTitle");
-const setInfo = document.getElementById("setInfo");
-const repInfo = document.getElementById("repInfo");
-const nextBtn = document.getElementById("nextBtn");
-
 const langToggle = document.getElementById("langToggle");
 
-// DASHBOARD
 const totalExercisesEl = document.getElementById("totalExercises");
 const totalWorkoutsEl = document.getElementById("totalWorkouts");
 const totalVolumeEl = document.getElementById("totalVolume");
 
-// STREAK
 const streakText = document.getElementById("streakText");
-
-// TIMER (optional UI)
-let timer;
-let seconds = 0;
 
 // =====================
 // INIT
 // =====================
 
-renderExercises();
-loadDropdown();
-renderWorkouts();
-updateUI();
+renderAll();
 updateDashboard();
 renderStreak();
+updateUI();
 
 // =====================
-// EXERCISE ADD
+// ADD EXERCISE
 // =====================
 
 addExerciseBtn.onclick = () => {
@@ -97,33 +70,47 @@ addExerciseBtn.onclick = () => {
 
     saveExercises(data);
 
-    renderExercises();
-    loadDropdown();
+    renderAll();
     updateDashboard();
 };
 
 // =====================
-// WORKOUT ADD
+// ADD WORKOUT
 // =====================
 
 addWorkoutBtn.onclick = () => {
-    const exercise = exerciseSelect.value;
+    const ex = document.getElementById("exerciseSelect").value;
     const sets = document.getElementById("setsInput").value;
     const reps = document.getElementById("repsInput").value;
 
-    if (!exercise || !sets || !reps) return;
+    if (!ex || !sets || !reps) return;
 
     const data = getWorkouts();
-    data.push({ id: Date.now(), exercise, sets, reps });
+    data.push({
+        id: Date.now(),
+        exercise: ex,
+        sets,
+        reps
+    });
 
     saveWorkouts(data);
 
-    renderWorkouts();
+    renderAll();
     updateDashboard();
 };
 
 // =====================
-// EXERCISE LIST
+// RENDER ALL
+// =====================
+
+function renderAll() {
+    renderExercises();
+    renderDropdown();
+    renderWorkouts();
+}
+
+// =====================
+// EXERCISES
 // =====================
 
 function renderExercises() {
@@ -133,18 +120,17 @@ function renderExercises() {
         const li = document.createElement("li");
         li.textContent = `${ex.name} (${ex.category})`;
 
-        const del = document.createElement("button");
-        del.textContent = "🗑";
+        const btn = document.createElement("button");
+        btn.textContent = "X";
 
-        del.onclick = () => {
-            let data = getExercises().filter(x => x.id !== ex.id);
-            saveExercises(data);
-            renderExercises();
-            loadDropdown();
+        btn.onclick = () => {
+            const filtered = getExercises().filter(e => e.id !== ex.id);
+            saveExercises(filtered);
+            renderAll();
             updateDashboard();
         };
 
-        li.appendChild(del);
+        li.appendChild(btn);
         exerciseList.appendChild(li);
     });
 }
@@ -153,19 +139,10 @@ function renderExercises() {
 // DROPDOWN
 // =====================
 
-function loadDropdown() {
-    const data = getExercises();
+function renderDropdown() {
     exerciseSelect.innerHTML = "";
 
-    if (!data.length) {
-        const opt = document.createElement("option");
-        opt.textContent = "No exercises";
-        opt.disabled = true;
-        exerciseSelect.appendChild(opt);
-        return;
-    }
-
-    data.forEach(ex => {
+    getExercises().forEach(ex => {
         const opt = document.createElement("option");
         opt.value = ex.name;
         opt.textContent = ex.name;
@@ -174,7 +151,7 @@ function loadDropdown() {
 }
 
 // =====================
-// WORKOUT LIST
+// WORKOUTS
 // =====================
 
 function renderWorkouts() {
@@ -182,68 +159,29 @@ function renderWorkouts() {
 
     getWorkouts().forEach(w => {
         const li = document.createElement("li");
-        li.textContent = `${w.exercise} - ${w.sets} x ${w.reps}`;
 
-        const del = document.createElement("button");
-        del.textContent = "🗑";
+        const date = new Date(w.id).toLocaleDateString();
 
-        del.onclick = () => {
-            let data = getWorkouts().filter(x => x.id !== w.id);
-            saveWorkouts(data);
-            renderWorkouts();
+        li.innerHTML = `
+            <strong>${date}</strong><br>
+            ${w.exercise} <br>
+            ${w.sets} x ${w.reps}
+        `;
+
+        const btn = document.createElement("button");
+        btn.textContent = "X";
+
+        btn.onclick = () => {
+            const filtered = getWorkouts().filter(x => x.id !== w.id);
+            saveWorkouts(filtered);
+            renderAll();
             updateDashboard();
         };
 
-        li.appendChild(del);
+        li.appendChild(btn);
         workoutList.appendChild(li);
     });
 }
-
-// =====================
-// FOLLOW ALONG MODE
-// =====================
-
-let index = 0;
-let set = 1;
-let active = [];
-
-startBtn.onclick = () => {
-    active = getWorkouts();
-    if (!active.length) return;
-
-    index = 0;
-    set = 1;
-
-    workoutScreen.style.display = "block";
-    show();
-};
-
-function show() {
-    const item = active[index];
-
-    if (!item) {
-        exerciseTitle.textContent = "Done 🎉";
-        setInfo.textContent = "";
-        repInfo.textContent = "";
-        return;
-    }
-
-    exerciseTitle.textContent = item.exercise;
-    setInfo.textContent = `Set ${set} / ${item.sets}`;
-    repInfo.textContent = `${item.reps} reps`;
-}
-
-nextBtn.onclick = () => {
-    const item = active[index];
-
-    if (set < item.sets) set++;
-    else {
-        index++;
-        set = 1;
-    }
-
-    show();
-};
 
 // =====================
 // DASHBOARD
@@ -258,16 +196,16 @@ function updateDashboard() {
 
     totalExercisesEl.textContent = `Exercises: ${ex.length}`;
     totalWorkoutsEl.textContent = `Workouts: ${wo.length}`;
-    totalVolumeEl.textContent = `Total Volume: ${volume}`;
+    totalVolumeEl.textContent = `Volume: ${volume}`;
 }
 
 // =====================
-// STREAK SYSTEM
+// STREAK
 // =====================
 
 function updateStreak() {
-    let streak = JSON.parse(localStorage.getItem("streak")) || {
-        lastDate: null,
+    let data = JSON.parse(localStorage.getItem("streak")) || {
+        last: null,
         count: 0
     };
 
@@ -275,62 +213,60 @@ function updateStreak() {
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
 
-    if (streak.lastDate !== today) {
-        if (streak.lastDate === yesterday.toDateString()) {
-            streak.count += 1;
+    if (data.last !== today) {
+        if (data.last === yesterday.toDateString()) {
+            data.count++;
         } else {
-            streak.count = 1;
+            data.count = 1;
         }
 
-        streak.lastDate = today;
-        localStorage.setItem("streak", JSON.stringify(streak));
+        data.last = today;
+        localStorage.setItem("streak", JSON.stringify(data));
     }
 
-    return streak.count;
+    return data.count;
 }
 
 function renderStreak() {
     const count = updateStreak();
-    streakText.textContent = `Streak: ${count} days 🔥`;
+    streakText.textContent = `🔥 Streak: ${count} days`;
 }
 
 // =====================
-// TIMER MODE
+// LANGUAGE
 // =====================
 
-document.getElementById("startTimer")?.addEventListener("click", () => {
+function updateUI() {
+    document.querySelectorAll("[data-i18n]").forEach(el => {
+        const key = el.getAttribute("data-i18n");
+        if (translations[lang][key]) {
+            el.textContent = translations[lang][key];
+        }
+    });
+}
+
+langToggle.onclick = () => {
+    lang = lang === "en" ? "nl" : "en";
+    updateUI();
+};
+
+// =====================
+// TIMER
+// =====================
+
+let timer;
+let seconds = 0;
+
+document.getElementById("startTimer").onclick = () => {
     clearInterval(timer);
     seconds = 0;
 
     timer = setInterval(() => {
         seconds++;
 
-        const min = String(Math.floor(seconds / 60)).padStart(2, "0");
-        const sec = String(seconds % 60).padStart(2, "0");
+        const m = String(Math.floor(seconds / 60)).padStart(2, "0");
+        const s = String(seconds % 60).padStart(2, "0");
 
-        document.getElementById("timer").textContent = `${min}:${sec}`;
+        document.getElementById("timer").textContent = `${m}:${s}`;
     }, 1000);
-});
-
-// =====================
-// LANGUAGE SYSTEM
-// =====================
-
-function updateUI() {
-    document.querySelectorAll("[data-i18n]").forEach(el => {
-        const key = el.getAttribute("data-i18n");
-        el.textContent = translations[lang][key] || "";
-    });
-
-    document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
-        const key = el.getAttribute("data-i18n-placeholder");
-        el.placeholder = translations[lang][key] || "";
-    });
-}
-
-langToggle.onclick = () => {
-    lang = lang === "nl" ? "en" : "nl";
-    updateUI();
 };
-
-updateUI();
